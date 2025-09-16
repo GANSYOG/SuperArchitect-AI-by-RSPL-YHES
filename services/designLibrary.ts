@@ -1,0 +1,51 @@
+
+export const architecturalStyles = [
+  { name: 'Modern', description: 'Clean lines, simple color palettes, and use of materials like metal, glass, and steel.' },
+  { name: 'Minimalist', description: 'Reductivist design, focusing on simplicity, neutral color palettes, and functionality.' },
+  { name: 'Brutalist', description: 'Characterized by raw, unfinished concrete, geometric shapes, and a monolithic appearance.' },
+  { name: 'Contemporary', description: 'Focuses on the now and the future, with fluid lines, sustainable materials, and cutting-edge tech.' },
+  { name: 'Industrial', description: 'Inspired by warehouses, with exposed brick, steel beams, and open-plan layouts.' },
+  { name: 'Biophilic', description: 'Incorporates natural elements like light, water, and plants to connect occupants with nature.' },
+  { name: 'Organic Modernist', description: 'Blends modernist principles with natural forms and materials, integrating with the landscape.' },
+  { name: 'Coastal', description: 'Light, airy, and beach-inspired, using whites, blues, and natural textures.' },
+  { name: 'Japandi', description: 'A hybrid of Japanese minimalism and Scandinavian functionalism, emphasizing craftsmanship and tranquility.' },
+  { name: 'Art Deco', description: 'Bold geometric patterns, rich colors, and lavish ornamentation from the 1920s and 30s.' },
+  { name: 'Mediterranean Revival', description: 'Features stucco walls, red tile roofs, arches, and ornamental ironwork, evoking a coastal European feel.' },
+  { name: 'Scandinavian', description: 'Emphasizes simplicity, functionality, and a connection to nature with light woods, neutral colors, and cozy textures.' },
+  { name: 'Wabi-Sabi', description: 'A Japanese aesthetic centered on accepting transience and imperfection, using natural, imperfect, and aged materials.' },
+  { name: 'Deconstructivism', description: 'Characterized by fragmentation, disjointed forms, and an absence of harmony, creating a sense of controlled chaos.' },
+  { name: 'Parametricism', description: 'Utilizes algorithms and computational design to create complex, fluid, and dynamic architectural forms.' },
+];
+
+export const materialsLibrary = {
+  facade: ['Board-formed Concrete', 'Shou Sugi Ban (Charred Cedar)', 'Corten Steel Panels', 'Exposed Red Brick', 'White Stucco', 'Glass Curtain Wall', 'Anodized Aluminum Mesh', 'Travertine Cladding', 'Zinc Panels'],
+  structure: ['Glulam Timber Beams', 'Polished Concrete Floors', 'Exposed Steel I-Beams', 'Cross-Laminated Timber (CLT)', 'Bamboo Framing'],
+  interior: ['Italian Marble', 'Wood Veneer Panels', 'Plaster Walls', 'Microcement Finish', 'Brass Fittings', 'Black Slate'],
+  flooring: ['Terrazzo', 'Wide-plank Oak', 'Polished Concrete', 'Hexagonal Tiles', 'Natural Stone'],
+};
+
+export const designFeatures = [
+  'Cantilevered Balcony',
+  'Double-Height Atrium',
+  'Rooftop Garden',
+  'Infinity Pool',
+  'Floor-to-ceiling Windows',
+  'Central Courtyard',
+  'Living Green Wall',
+  'Mezzanine Level',
+  'Kinetic Facade',
+  'Rainwater Harvesting System',
+  'Smart Glass',
+  'Skylights',
+  'Smart Home Integration',
+  'Biometric Security',
+  'Drone Landing Pad',
+  'Hidden Panic Room',
+  'Indoor Waterfall',
+  'Automated Retractable Roof',
+  'Geothermal Heating/Cooling',
+  'Pneumatic Vacuum Elevator',
+  'Helical Staircase',
+  'Subterranean Level',
+  'VR/AR Integration Room',
+];
