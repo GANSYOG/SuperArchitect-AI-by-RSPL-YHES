@@ -11,12 +11,12 @@ import { SparklesIcon } from './components/icons/SparklesIcon';
 import { PromptHub } from './components/PromptHub';
 import { AgentDesigner } from './components/AgentDesigner';
 import { InteriorRevamp } from './components/InteriorRevamp';
+import { SuperhumanDesigner } from './components/SuperhumanDesigner';
 import { HomeModernIcon } from './components/icons/HomeModernIcon';
 import { PaintBrushIcon } from './components/icons/PaintBrushIcon';
-import { UsersIcon } from './components/icons/UsersIcon';
-import { LightBulbIcon } from './components/icons/LightBulbIcon';
-import { SuperhumanDesigner } from './components/SuperhumanDesigner';
 import { UserCircleIcon } from './components/icons/UserCircleIcon';
+import { LightBulbIcon } from './components/icons/LightBulbIcon';
+import { UsersIcon } from './components/icons/UsersIcon';
 
 const App: React.FC = () => {
   const [designs, setDesigns] = useState<Design[]>([]);
@@ -24,11 +24,11 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedDesign, setSelectedDesign] = useState<Design | null>(null);
-  const [hasGenerated, setHasGenerated] = useState(false);
   const [view, setView] = useState<View>('architecture');
+  const [hasGenerated, setHasGenerated] = useState(false);
 
   const handleGenerateDesigns = useCallback(async (brief: ProjectBrief) => {
-    setView('architecture'); // Switch to architecture studio to show progress
+    setView('architecture');
     setIsLoading(true);
     setHasGenerated(true);
     setError(null);
@@ -60,13 +60,8 @@ const App: React.FC = () => {
 
   const renderArchitectureStudio = () => {
     if (isLoading) {
-      return (
-        <div className="flex flex-col items-center justify-center h-full animate-fadeIn">
-          <AgentHuddle statuses={agentStatuses} />
-        </div>
-      );
+      return <AgentHuddle statuses={agentStatuses} />;
     }
-
     if (error) {
       return (
         <div className="max-w-2xl mx-auto bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-center mt-10">
@@ -75,33 +70,18 @@ const App: React.FC = () => {
         </div>
       );
     }
-
-    if (hasGenerated && designs.length > 0) {
-        return (
-            <div className="flex justify-center items-start animate-fadeIn">
-                <div className="w-full max-w-xl">
-                    {designs.map((design, index) => (
-                        <DesignCard key={index} design={design} onSelect={() => setSelectedDesign(design)} />
-                    ))}
-                </div>
-            </div>
-        );
-    }
-    
-    // Welcome / Initial State for Architecture Studio
-    return (
-        <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)] text-center animate-fadeIn">
-            <div className="relative mb-6">
-                <div className="absolute -inset-2 bg-amber-500/10 rounded-full blur-2xl"></div>
-                <SparklesIcon className="relative w-24 h-24 text-amber-500/80"/>
-            </div>
-            <h2 className="text-3xl font-bold text-gray-200">Welcome to the Architecture Studio</h2>
-            <p className="text-gray-400 mt-2 max-w-lg">
-                Use the panel on the left to create a detailed brief. Our AI team will then generate a complete architectural concept for you.
-            </p>
+    if (designs.length > 0) {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 animate-fadeIn">
+          {designs.map((design, index) => (
+            <DesignCard key={index} design={design} onSelect={() => setSelectedDesign(design)} />
+          ))}
         </div>
-    );
-  }
+      );
+    }
+    // Show input form if nothing has been generated yet
+    return <InputForm onSubmit={handleGenerateDesigns} isLoading={isLoading} />;
+  };
 
   const renderMainContent = () => {
     switch (view) {
@@ -116,53 +96,17 @@ const App: React.FC = () => {
       case 'inspiration':
         return <PromptHub />;
       default:
-        return null;
+        return renderArchitectureStudio(); // Default to architecture
     }
-  }
-
-  const NavItem: React.FC<{
-    label: string;
-    viewName: View;
-    icon: React.FC<any>;
-  }> = ({ label, viewName, icon: Icon }) => (
-    <button
-      onClick={() => setView(viewName)}
-      className={`flex items-center gap-3 w-full p-3 rounded-lg text-left transition-all duration-200 ${view === viewName ? 'bg-amber-600/20 text-amber-300' : 'text-gray-400 hover:bg-gray-800/60 hover:text-gray-200'}`}
-    >
-      <Icon className="w-6 h-6 flex-shrink-0" />
-      <span className="font-semibold">{label}</span>
-    </button>
-  );
+  };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-200 font-sans">
-      <Header />
-      <div className="flex flex-row items-start">
-        {/* New Persistent Sidebar */}
-        <aside className="w-[480px] h-[calc(100vh-80px)] sticky top-[80px] flex flex-row">
-            <nav className="w-64 p-4 bg-gray-950/40 border-r border-gray-800/70 flex flex-col gap-2">
-                <h2 className="px-3 pt-2 pb-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">Studios</h2>
-                <NavItem label="Architecture" viewName="architecture" icon={HomeModernIcon} />
-                <NavItem label="Interior Revamp" viewName="interior" icon={PaintBrushIcon} />
-                <NavItem label="Inspiration Hub" viewName="inspiration" icon={LightBulbIcon} />
-
-                <h2 className="px-3 pt-4 pb-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">Agents</h2>
-                <NavItem label="Superhuman Designer" viewName="designer" icon={UserCircleIcon} />
-                <NavItem label="Agent Team Designer" viewName="agents" icon={UsersIcon} />
-            </nav>
-            {/* The Input Form is now contextually part of the main architecture flow */}
-             <div className="flex-1 overflow-y-auto p-2 sm:p-4 md:p-6">
-                <InputForm 
-                    onSubmit={handleGenerateDesigns} 
-                    isLoading={isLoading} 
-                />
-            </div>
-        </aside>
-
-        <main className="flex-1 p-8 md:p-12 overflow-y-auto h-[calc(100vh-80px)]">
-            {renderMainContent()}
-        </main>
-      </div>
+    <div className="min-h-screen bg-brand-dark text-gray-200 font-sans">
+      <Header currentView={view} setView={setView} />
+      
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        {renderMainContent()}
+      </main>
       
       <AIAssistant />
       {selectedDesign && (

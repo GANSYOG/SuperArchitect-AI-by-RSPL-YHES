@@ -131,14 +131,14 @@ const generateAllVisuals = async (designs: Design[], updateStatus: StatusUpdater
                 ? `A key requirement is to prominently feature the design's signature element: "${currentDesign.description.match(/signature element: (.*?)\./i)![1]}". Ensure the plan's layout clearly showcases this.`
                 : '';
                 
-            fullPrompt = `You are a master architect and CAD drafter creating a hyper-detailed, construction-ready blueprint for: "${currentDesign.title} - ${currentDesign.description}". The specific subject is: ${p.prompt}.
+            fullPrompt = `You are a master architect and CAD drafter creating a hyper-detailed, construction-ready, high-resolution (8K) blueprint for: "${currentDesign.title} - ${currentDesign.description}". The specific subject is: ${p.prompt}.
 
 ${dimensionsText}
 ${signatureElementText}
 
 ${randomStyle.description}
 
-The final image MUST be a professional-grade, black and white technical drawing (unless color-coding is specified) with ultra-clean, crisp vector-like lines on a pure white background. It must be indistinguishable from a real architectural document and include ALL of the following elements with extreme precision:
+The final image MUST be a professional-grade technical drawing with ultra-clean, crisp, vector-like lines without any aliasing or pixelation, on a pure white background (unless color-coding is specified). The output must be suitable for large-format printing and professional presentation, and be indistinguishable from a document produced by high-end CAD software. It must include ALL of the following elements with extreme precision:
 
 **1. Architectural Grid System:**
    - Establish a clear column grid. Label vertical grid lines with numbers (1, 2, 3...) and horizontal grid lines with letters (A, B, C...).
@@ -178,17 +178,19 @@ The final output must be a top-down, orthographic perspective, meticulously deta
 
         } else { // 3D Render
             let aspectRatio = '16:9';
-            let style = 'exterior';
             if (p.type === 'interior') {
                 const rand = Math.random();
                 aspectRatio = rand > 0.66 ? '4:3' : (rand > 0.33 ? '3:4' : '1:1');
-                style = 'interior';
             }
-            fullPrompt = `Award-winning 3D architectural ${style} render.
+            fullPrompt = `Masterpiece professional architectural photography, hyper-detailed, high-resolution 8K render, crisp details, suitable for professional architectural presentations.
+**Style:** Cinematic, photorealistic, sharp focus, physically-based rendering (PBR).
+**Camera:** Shot on a Sony A7R IV with a 35mm f/1.4 G Master lens.
+**Lighting:** Volumetric, cinematic lighting with soft shadows and realistic reflections.
+**Engine:** Unreal Engine 5, V-Ray, Octane Render.
 **Design Concept:** ${currentDesign.description}
 **Key Materials:** ${currentDesign.materials?.join(', ')}
 **Scene Details:** ${p.prompt}
-Render with hyperrealism, ultra-detail, professional visualization, cinematic lighting, 8k, octane render, Unreal Engine 5, v-ray.`;
+The final image must be indistinguishable from a real photograph, showcasing extremely detailed textures and materials.`;
             config = { numberOfImages: 1, outputMimeType: 'image/jpeg', aspectRatio: aspectRatio as "1:1" | "3:4" | "4:3" | "9:16" | "16:9" };
             placeholderUrl = `https://placehold.co/1280x720/111827/f59e0b/png?text=Synthesis+AI:+Render+Failed`;
         }
@@ -611,13 +613,13 @@ export const revampInteriorImage = async (
         const imagePart = {
             inlineData: { mimeType: 'image/jpeg', data: base64Image.split(',')[1] }
         };
-        const analysisPrompt = `Analyze the provided image of an interior space. Identify and describe in extreme detail all permanent architectural features, including:
-- The exact position, size, and style of all windows and doors.
-- Ceiling height and any features like beams or vaults.
-- Wall positions and the overall room layout.
-- The type and location of flooring if visible.
-- The perspective and camera angle of the shot.
-Based on this analysis, create a single, new, hyper-detailed text-to-image prompt for an AI image generator. This new prompt's goal is to generate an image that perfectly matches the original room's architecture and perspective, but completely replaces the interior design (furniture, decor, colors, lighting, materials) with the following style: "${stylePrompt}". The new prompt must be a masterpiece of descriptive language to ensure the final image is photorealistic and architecturally consistent with the original. Output only the final, complete text-to-image prompt and nothing else.`;
+        const analysisPrompt = `Analyze the provided image of an interior space. Identify and describe in extreme detail all permanent architectural features (windows, doors, ceiling height, layout, flooring, perspective). Based on this, create a new, single, hyper-detailed text-to-image prompt for an AI image generator.
+
+This new prompt's goal is to generate an image that perfectly matches the original room's architecture and camera perspective, but completely revamps the interior design (furniture, decor, colors, lighting, materials) to match this style: "${stylePrompt}".
+
+The new prompt MUST be a masterpiece of descriptive language. It MUST include advanced rendering keywords to ensure the final image is a high-resolution, photorealistic, and professional architectural visualization. Keywords to include are: "8K resolution", "ultra-detailed textures", "cinematic lighting", "V-Ray render", "physically-based rendering (PBR)", "sharp focus", "professional photography", "crisp details".
+
+Output only the final, complete text-to-image prompt and nothing else.`;
 
         const promptGenResponse = await ai.models.generateContent({
             model: "gemini-2.5-flash",
@@ -672,7 +674,7 @@ Based on this analysis, create a single, new, hyper-detailed text-to-image promp
 };
 
 export const generateFurnitureImage = async (prompt: string): Promise<string> => {
-    const fullPrompt = `${prompt}. Photorealistic, on a pure white background, studio lighting, no shadows.`;
+    const fullPrompt = `${prompt}. High-resolution, photorealistic product shot, crisp details, on a pure white background, studio lighting, no shadows.`;
     try {
         const response = await ai.models.generateImages({
             model: 'imagen-4.0-generate-001',
@@ -704,7 +706,7 @@ export const editImage = async (base64Image: string, mimeType: string, prompt: s
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash-image-preview',
+            model: 'gemini-2.5-flash-image',
             contents: {
                 parts: [imageDataPart, textPromptPart],
             },
@@ -742,9 +744,10 @@ export const generateSuperhumanDesigns = async (
     aspectRatio: "1:1" | "3:4" | "4:3" | "9:16" | "16:9"
 ): Promise<string[]> => {
     try {
+        const highQualityPrompt = `${prompt}. Hyper-detailed, professional architectural photography, 8K resolution, cinematic lighting, V-Ray, photorealistic, crisp details, suitable for professional architectural presentations.`;
         const response = await ai.models.generateImages({
             model: 'imagen-4.0-generate-001',
-            prompt,
+            prompt: highQualityPrompt,
             config: {
                 numberOfImages,
                 outputMimeType: 'image/jpeg',
